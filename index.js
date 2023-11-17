@@ -16,7 +16,7 @@ const app = express();
 const PORT = process.env.PORT;
 // Configure CORS to allow requests from your Nuxt 3 application (http://localhost:3000)
 const corsOptions = {
-  origin: "http://localhost:3000", // Replace with your client's URL in production
+  origin: process.env.CLIENT_URL, // Replace with your client's URL in production
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // Allow cookies to be sent along with the request
   optionsSuccessStatus: 204,
