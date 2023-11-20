@@ -30,6 +30,11 @@ app.use(session({
   secret: process.env.SESSION_SECRET,  // Change this to a secure random key
   resave: false,
   saveUninitialized: true,
+  cookie: {
+    domain: process.env.CLIENT_URL,
+    sameSite: 'None',
+    secure: true, // Make sure this is set to true for HTTPS
+  },
 }));
 
 // //schedule active property of the URL
