@@ -144,7 +144,7 @@ export const unRegisterUrl = async (req, res, next) => {
             }
             // console.log(qrCode)
             url = new Url({
-              userId: userSessionId,
+              userId: null,
               originalUrl: originalUrl,
               shortUrl,
               urlId,
@@ -161,7 +161,7 @@ export const unRegisterUrl = async (req, res, next) => {
               return next(createError(404, "QR code not generated!!!"));
             }
             url = new Url({
-              userId: userSessionId,
+              userId: null,
               originalUrl,
               shortUrl,
               urlId: alias,
@@ -468,8 +468,8 @@ export const getUnRegisterUserUrls = async (req, res, next) => {
   try {
     //  console.log("user =>", userId);
     const urls = await Url.find({
-      createdByIp: userId,
-      userId: userSessionId,
+      createdByIp: userSessionId,
+      userId: null,
     });
     res.status(200).json(urls);
   } catch (err) {
