@@ -1,7 +1,7 @@
 {
-  "name": "sactrum-api",
+  "name": "Scissors-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "This is Scissors Url shortener API",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -11,7 +11,14 @@
   "engines": {
     "node": "18.x"
   },
-  "keywords": [],
+  "keywords": [
+    "node js",
+    "express",
+    "mongo db",
+    "rate limiter",
+    "axios",
+    "url shortener"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {

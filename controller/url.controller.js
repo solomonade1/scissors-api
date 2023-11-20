@@ -93,6 +93,7 @@ export const unRegisterUrl = async (req, res, next) => {
   const { urlAlias } = req.body;
   const base = process.env.BASE;
   const urlId = nanoid(5);
+  const userSessionId = req.sessionID;
   const userIp = req.ip;
 
   try {
@@ -104,7 +105,7 @@ export const unRegisterUrl = async (req, res, next) => {
     if (validUrl) {
       const countUrl = await Url.countDocuments({
         userId: null,
-        createdByIp: userIp,
+        createdByIp: userSessionId,
       });
       if (countUrl >= 5) {
         return next(
@@ -143,12 +144,12 @@ export const unRegisterUrl = async (req, res, next) => {
             }
             // console.log(qrCode)
             url = new Url({
-              userId: null,
+              userId: userSessionId,
               originalUrl: originalUrl,
               shortUrl,
               urlId,
               qrCode,
-              createdByIp: userIp,
+              createdByIp: userSessionId,
               clickOrigins: {},
             });
             await url.save();
@@ -160,12 +161,12 @@ export const unRegisterUrl = async (req, res, next) => {
               return next(createError(404, "QR code not generated!!!"));
             }
             url = new Url({
-              userId: null,
+              userId: userSessionId,
               originalUrl,
               shortUrl,
               urlId: alias,
               qrCode,
-              createdByIp: userIp,
+              createdByIp: userSessionId,
               clickOrigins: {},
             });
             await url.save();
@@ -463,11 +464,12 @@ export const getUserUrlsClickInfo = async (req, res, next) => {
 
 export const getUnRegisterUserUrls = async (req, res, next) => {
   const userId = req.ip;
+    const userSessionId = req.sessionID;
   try {
     //  console.log("user =>", userId);
     const urls = await Url.find({
       createdByIp: userId,
-      userId: null,
+      userId: userSessionId,
     });
     res.status(200).json(urls);
   } catch (err) {
