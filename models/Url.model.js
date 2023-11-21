@@ -7,8 +7,8 @@ const UrlSchema = new mongoose.Schema(
       required: true,
     },
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User' // Reference the User model
+      type: String,
+      // ref: 'User' // Reference the User model
     },
     createdByIp: {
       type: String,

@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import session from "express-session";
+import requestIp from "request-ip";
+import proxy from "proxy-addr";
 import { connectDb } from "./config/dbConnect.js";
 import urlRouter from "./routes/url.routes.js";
 import authRoute from "./routes/auth.route.js";
@@ -26,17 +28,21 @@ app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
-app.use(session({
-  secret: process.env.SESSION_SECRET,  // Change this to a secure random key
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    domain: process.env.CLIENT_URL,
-    sameSite: 'None',
-    secure: true, // Make sure this is set to true for HTTPS
-  },
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET, // Change this to a secure random key
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      domain: process.env.CLIENT_URL,
+      sameSite: "None",
+      secure: true, // Make sure this is set to true for HTTPS
+    },
+  })
+);
 
+// app.use(requestIp.mw());
+// app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
 // //schedule active property of the URL
 // scheduleActive()
 

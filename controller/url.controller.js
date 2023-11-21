@@ -7,6 +7,7 @@ import { createError } from "../utils/createError.js";
 import QRCode from "qrcode";
 import IP from "ip";
 import axios from "axios";
+import { getClientIp } from "../utils/proxyAddress.js";
 
 export const createUrl = async (req, res, next) => {
   const { originalUrl } = req.body;
@@ -93,8 +94,9 @@ export const unRegisterUrl = async (req, res, next) => {
   const { urlAlias } = req.body;
   const base = process.env.BASE;
   const urlId = nanoid(5);
-  const userSessionId = req.sessionID;
-  const userIp = req.ip;
+  const userIp = getClientIp(req);
+
+  console.log(userIp, "USERRR");
 
   try {
     const validUrl = validateUrl(originalUrl);
@@ -105,7 +107,7 @@ export const unRegisterUrl = async (req, res, next) => {
     if (validUrl) {
       const countUrl = await Url.countDocuments({
         userId: null,
-        createdByIp: userSessionId,
+        createdByIp: userIp,
       });
       if (countUrl >= 5) {
         return next(
@@ -149,7 +151,7 @@ export const unRegisterUrl = async (req, res, next) => {
               shortUrl,
               urlId,
               qrCode,
-              createdByIp: userSessionId,
+              createdByIp: userIp,
               clickOrigins: {},
             });
             await url.save();
@@ -166,7 +168,7 @@ export const unRegisterUrl = async (req, res, next) => {
               shortUrl,
               urlId: alias,
               qrCode,
-              createdByIp: userSessionId,
+              createdByIp: userIp,
               clickOrigins: {},
             });
             await url.save();
@@ -464,11 +466,10 @@ export const getUserUrlsClickInfo = async (req, res, next) => {
 
 export const getUnRegisterUserUrls = async (req, res, next) => {
   const userId = req.ip;
-    const userSessionId = req.sessionID;
   try {
     //  console.log("user =>", userId);
     const urls = await Url.find({
-      createdByIp: userSessionId,
+      createdByIp: userId,
       userId: null,
     });
     res.status(200).json(urls);
