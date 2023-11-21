@@ -10,7 +10,7 @@ const UrlSchema = new mongoose.Schema(
       type: String,
       // ref: 'User' // Reference the User model
     },
-    createdByIp: {
+    createdById: {
       type: String,
       required: true,
     },

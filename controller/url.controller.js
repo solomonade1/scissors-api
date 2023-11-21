@@ -58,7 +58,7 @@ export const createUrl = async (req, res, next) => {
             shortUrl,
             urlId,
             qrCode,
-            createdByIp: userIp,
+            createdById: userIp,
             clickOrigins: {},
           });
 
@@ -76,7 +76,7 @@ export const createUrl = async (req, res, next) => {
             shortUrl,
             urlId: alias,
             qrCode,
-            createdByIp: userIp,
+            createdById: userIp,
             clickOrigins: {},
           });
           await url.save();
@@ -95,8 +95,9 @@ export const unRegisterUrl = async (req, res, next) => {
   const base = process.env.BASE;
   const urlId = nanoid(5);
   const userIp = getClientIp(req);
+  const fingerPrint = req.fingerprint.hash;
 
-  console.log(userIp, "USERRR");
+  // console.log(userIp, "USERRR");
 
   try {
     const validUrl = validateUrl(originalUrl);
@@ -106,8 +107,8 @@ export const unRegisterUrl = async (req, res, next) => {
     }
     if (validUrl) {
       const countUrl = await Url.countDocuments({
-        userId: null,
-        createdByIp: userIp,
+        userId: fingerPrint,
+        createdById: fingerPrint,
       });
       if (countUrl >= 5) {
         return next(
@@ -146,12 +147,12 @@ export const unRegisterUrl = async (req, res, next) => {
             }
             // console.log(qrCode)
             url = new Url({
-              userId: null,
+              userId: fingerPrint,
               originalUrl: originalUrl,
               shortUrl,
               urlId,
               qrCode,
-              createdByIp: userIp,
+              createdById: fingerPrint,
               clickOrigins: {},
             });
             await url.save();
@@ -163,12 +164,12 @@ export const unRegisterUrl = async (req, res, next) => {
               return next(createError(404, "QR code not generated!!!"));
             }
             url = new Url({
-              userId: null,
+              userId: fingerPrint,
               originalUrl,
               shortUrl,
               urlId: alias,
               qrCode,
-              createdByIp: userIp,
+              createdById: fingerPrint,
               clickOrigins: {},
             });
             await url.save();
@@ -187,6 +188,7 @@ export const updateUrl = async (req, res, next) => {
   const base = process.env.BASE;
   const urlId = nanoid(5);
   const userIp = req.ip;
+  const fingerPrint =   req.fingerprint.hash;
   const userId = req.user.id;
 
   try {
@@ -466,11 +468,12 @@ export const getUserUrlsClickInfo = async (req, res, next) => {
 
 export const getUnRegisterUserUrls = async (req, res, next) => {
   const userId = req.ip;
+ const fingerPrint =  req.fingerprint.hash;
+
   try {
     //  console.log("user =>", userId);
     const urls = await Url.find({
-      createdByIp: userId,
-      userId: null,
+      createdById: fingerPrint,
     });
     res.status(200).json(urls);
   } catch (err) {

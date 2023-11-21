@@ -3,8 +3,8 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import session from "express-session";
-import requestIp from "request-ip";
-import proxy from "proxy-addr";
+import Fingerprint from "express-fingerprint";
+
 import { connectDb } from "./config/dbConnect.js";
 import urlRouter from "./routes/url.routes.js";
 import authRoute from "./routes/auth.route.js";
@@ -41,10 +41,15 @@ app.use(
   })
 );
 
-// app.use(requestIp.mw());
-// app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
-// //schedule active property of the URL
-// scheduleActive()
+app.use(Fingerprint({
+  parameters:[
+      // Defaults
+      Fingerprint.useragent,
+      Fingerprint.acceptHeaders,
+      Fingerprint.geoip,
+  ]
+}))
+
 
 app.use("/api/v1", urlRouter);
 app.use("/api/v1", authRoute);
