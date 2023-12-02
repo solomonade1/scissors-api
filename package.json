@@ -17,9 +17,10 @@
     "mongo db",
     "rate limiter",
     "axios",
-    "url shortener"
+    "url shortener",
+    "scissors"
   ],
-  "author": "",
+  "author": "Solomon Adegboyega",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.5.1",
